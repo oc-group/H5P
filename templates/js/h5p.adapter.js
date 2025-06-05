@@ -121,6 +121,34 @@ H5P.preventInit = true;
       content_wrapper.querySelector('.h5p-iframe')
         ?.addEventListener('load', function (event) {
           content_wrapper.querySelector('.alert')?.remove();
+          let iframe = content_wrapper.querySelector('iframe');
+          if (!iframe.contentDocument.getElementById('h5p-custom-css')) {
+              var styleEl = iframe.contentDocument.createElement('style');
+              styleEl.type = 'text/css';
+              styleEl.id = 'h5p-custom-css';
+              styleEl.innerHTML = `
+                #h5p-image-hotspots-overlay .h5p-image-hotspot-popup-body,
+                #h5p-image-hotspots-overlay .h5p-image-hotspot-popup-body-fraction {
+                  padding: 0 !important;
+                  margin: 0 !important;
+                  text-align: center !important;
+                }
+
+                #h5p-image-hotspots-overlay .h5p-image-hotspot-popup-body-fraction img {
+                  max-width: 100% !important;
+                  height: auto !important;
+                  width: auto !important;
+                  display: block !important;
+                  margin: 0 auto !important;
+                  object-fit: contain !important;
+                }
+              `;
+              if (iframe.contentDocument.head) {
+                iframe.contentDocument.head.appendChild(styleEl);
+              } else {
+                iframe.contentDocument.documentElement.appendChild(styleEl);
+              }
+            }
         });
 
       H5P.init(content_wrapper);
